@@ -71,6 +71,7 @@ body {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  overflow: visible;
 }
 
 .eyebrow-wrap {
@@ -172,6 +173,9 @@ h1 {
 }
 
 .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: var(--tag-bg);
   border: 1px solid var(--stroke);
   color: var(--ink);
@@ -180,12 +184,14 @@ h1 {
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
 .chip:hover {
   transform: translateY(-1px);
   border-color: rgba(249, 115, 22, 0.55);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
 }
 
 .chip.active {
@@ -194,13 +200,18 @@ h1 {
   border-color: var(--chip-active-border);
 }
 
+.chip:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
 .random-card {
   background: var(--paper);
   border: 1px solid var(--stroke);
   border-radius: 16px;
   padding: 16px 16px 48px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
   display: grid;
   gap: 12px;
@@ -227,6 +238,9 @@ h1 {
 }
 
 .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: var(--tag-bg);
   border: 1px solid var(--stroke);
   color: var(--ink);
@@ -240,8 +254,6 @@ h1 {
 .tag.small {
   font-size: 11px;
   margin: 4px 6px 0 0;
-  display: inline-flex;
-  align-items: center;
   gap: 4px;
 }
 
@@ -277,6 +289,78 @@ h1 {
 .icon-btn:active {
   transform: translateY(0);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.icon-btn i {
+  line-height: 1;
+}
+
+.chip i,
+.tag i {
+  line-height: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .has-tooltip {
+    position: relative;
+    z-index: 2;
+  }
+
+  .has-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translate(-50%, 0);
+    background: rgba(12, 19, 43, 0.9);
+    color: #fff;
+    padding: 6px 9px;
+    border-radius: 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+  }
+
+  .has-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(12, 19, 43, 0.9);
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  .has-tooltip:hover::after,
+  .has-tooltip:hover::before {
+    opacity: 1;
+    transform: translate(-50%, -2px);
+  }
+
+  .has-tooltip.tooltip-right::after {
+    left: auto;
+    right: 0;
+    transform: translate(0, 0);
+  }
+
+  .has-tooltip.tooltip-right::before {
+    left: auto;
+    right: 12px;
+    transform: translate(0, 0);
+  }
+
+  .has-tooltip.tooltip-right:hover::after,
+  .has-tooltip.tooltip-right:hover::before {
+    transform: translate(0, -2px);
+  }
 }
 
 main {

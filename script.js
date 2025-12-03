@@ -12,7 +12,14 @@ const categoryOptions = categoriesConfig.map((c) => c.id);
 let activeCategory = 'all';
 let currentFacts = [...facts];
 
-const getCategoryMeta = (id) => categoriesConfig.find((c) => c.id === id) || { id, label: id, icon: '🏷' };
+const getCategoryMeta = (id) => categoriesConfig.find((c) => c.id === id) || { id, label: id, icon: 'fa-solid fa-tag' };
+
+const createIconEl = (iconClass) => {
+  const icon = document.createElement('i');
+  icon.className = `${iconClass} fa-fw`;
+  icon.setAttribute('aria-hidden', 'true');
+  return icon;
+};
 
 const renderFacts = (items) => {
   listEl.innerHTML = '';
@@ -34,7 +41,7 @@ const renderFacts = (items) => {
         const meta = getCategoryMeta(cat);
         const tag = document.createElement('span');
         tag.className = 'tag small';
-        tag.textContent = `${meta.icon} ${meta.label}`;
+        tag.append(createIconEl(meta.icon), document.createTextNode(meta.label));
         tagsWrap.append(tag);
       });
       li.append(tagsWrap);
@@ -65,9 +72,11 @@ const renderChips = () => {
     const meta = getCategoryMeta(cat);
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = `chip ${cat === activeCategory ? 'active' : ''}`.trim();
+    btn.className = `chip has-tooltip ${cat === activeCategory ? 'active' : ''}`.trim();
     btn.dataset.category = cat;
-    btn.textContent = `${meta.icon} ${meta.label}`;
+    btn.append(createIconEl(meta.icon), document.createTextNode(meta.label));
+    btn.title = `Категория: ${meta.label}`;
+    btn.dataset.tooltip = `Категория: ${meta.label}`;
     btn.setAttribute('aria-pressed', String(cat === activeCategory));
     btn.addEventListener('click', () => {
       activeCategory = cat;
@@ -92,7 +101,7 @@ const pickRandom = () => {
     const meta = getCategoryMeta(cat);
     const tag = document.createElement('span');
     tag.className = 'tag small';
-    tag.textContent = `${meta.icon} ${meta.label}`;
+    tag.append(createIconEl(meta.icon), document.createTextNode(meta.label));
     randomCatsEl.append(tag);
   });
 };
@@ -100,8 +109,13 @@ const pickRandom = () => {
 const setTheme = (theme) => {
   document.body.dataset.theme = theme;
   localStorage.setItem('theme', theme);
-  themeToggle.textContent = theme === 'dark' ? '🌤' : '🌙';
-  themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на тёмную тему');
+  themeToggle.innerHTML = theme === 'dark'
+    ? '<i class="fa-solid fa-sun" aria-hidden="true"></i>'
+    : '<i class="fa-solid fa-moon" aria-hidden="true"></i>';
+  const label = theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на тёмную тему';
+  themeToggle.setAttribute('aria-label', label);
+  themeToggle.setAttribute('title', label);
+  themeToggle.dataset.tooltip = label;
 };
 
 const initTheme = () => {
@@ -119,6 +133,11 @@ filterEl.addEventListener('search', () => {
 });
 
 randomBtn.addEventListener('click', pickRandom);
+randomBtn.innerHTML = '<i class="fa-solid fa-shuffle" aria-hidden="true"></i>';
+randomBtn.setAttribute('title', 'Показать случайный факт');
+randomBtn.dataset.tooltip = 'Показать случайный факт';
+randomBtn.classList.add('has-tooltip');
+themeToggle.classList.add('has-tooltip', 'tooltip-right');
 
 themeToggle.addEventListener('click', () => {
   const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
